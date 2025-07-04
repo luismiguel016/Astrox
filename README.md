@@ -1,7 +1,7 @@
 # Proyecto-parcial-IA
 
-## Nombre
+## Nombre: Luis Miguel montesino
 
-## Matrícula
+## Matrícula: 15-EISN-2-052
 
-## Proyecto
+## Proyecto: Astros juego inspierado en Devil Zone

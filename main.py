@@ -6,6 +6,7 @@
 import pygame
 import sys
 
+
 # Inicialización de Pygame
 pygame.init()
 
@@ -19,3 +20,13 @@ clock = pygame.time.Clock()
 NEGRO = (0, 0, 0)
 BLANCO= (255, 255, 255)
 AZUL = (64, 128, 255)
+
+from scripts.menu import mostrar_menu
+
+# Cargar imagen del menú completo y ajustarla al tamaño de la ventana
+menu_original = pygame.image.load("assets/images/astrox_menu.png").convert()
+menu_image = pygame.transform.scale(menu_original, (WIDTH, HEIGHT))
+
+
+# Mostrar menú antes de iniciar el juego
+mostrar_menu(screen, menu_image)

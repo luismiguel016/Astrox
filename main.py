@@ -9,6 +9,7 @@ import sys
 
 # Inicialización de Pygame
 pygame.init()
+pygame.mouse.set_visible(False)
 
 # Tamaño de la ventana
 WIDTH, HEIGHT = 800, 600
@@ -21,7 +22,9 @@ NEGRO = (0, 0, 0)
 BLANCO= (255, 255, 255)
 AZUL = (64, 128, 255)
 
-from scripts.menu import mostrar_menu
+# Importa la función que muestra el menú principal del juego
+from scripts.menu import mostrar_menu  
+
 
 # Cargar imagen del menú completo y ajustarla al tamaño de la ventana
 menu_original = pygame.image.load("assets/images/astrox_menu.png").convert()
@@ -30,3 +33,60 @@ menu_image = pygame.transform.scale(menu_original, (WIDTH, HEIGHT))
 
 # Mostrar menú antes de iniciar el juego
 mostrar_menu(screen, menu_image)
+
+# Importar la clase de la nave del jugador desde jugador.py
+from scripts.jugador import NaveJugador
+
+# ===== ganas de llorar no me faltan ===========
+# Crear la nave del jugador y el grupo de sprites
+# ==============================================
+
+# Instanciar la nave en el centro de la pantalla
+nave = NaveJugador(WIDTH // 2, HEIGHT // 2)
+
+# Crear un grupo de sprites y añadir la nave
+grupo_naves = pygame.sprite.Group()
+grupo_naves.add(nave)
+
+
+# Bucle principal del juego
+
+while True:
+    # Manejo de eventos (salir del juego, etc.)
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            pygame.quit()
+            sys.exit()
+
+    # =============================
+    # Entrada del jugador
+    # =============================
+
+    # Detectar teclas presionadas y posición del mouse
+    teclas = pygame.key.get_pressed()
+    mouse_pos = pygame.mouse.get_pos()
+
+    # =============================
+    # Actualización de la lógica del juego
+    # =============================
+
+    # Actualizar la posición y estado de la nave según la entrada
+    grupo_naves.update(teclas, mouse_pos)
+
+    # =============================
+    # Dibujar elementos en pantalla
+    # =============================
+
+    # Limpiar la pantalla
+    screen.fill(NEGRO)
+
+    # Dibujar la nave
+    grupo_naves.draw(screen)
+
+    # Actualizar la pantalla
+    pygame.display.flip()
+
+    # Esperar para mantener 60 FPS
+    clock.tick(60)
+
+

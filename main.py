@@ -5,6 +5,9 @@
 
 import pygame
 import sys
+import random
+import math
+from scripts.enemigo_basico import EnemigoBasico
 
 
 # Inicialización de Pygame
@@ -48,6 +51,19 @@ nave = NaveJugador(WIDTH // 2, HEIGHT // 2)
 grupo_naves = pygame.sprite.Group()
 grupo_naves.add(nave)
 
+# Crear grupo de enemigos
+grupo_enemigos = pygame.sprite.Group()
+
+def crear_enemigo():
+    x = random.randint(50, WIDTH - 50)
+    y = random.randint(-100, -40)
+    return EnemigoBasico(x, y, objetivo=nave)
+
+
+# Agregar enemigos desde arriba
+for i in range(5):
+    enemigo = EnemigoBasico(x=100 * i + 50, y=50, objetivo=nave)
+    grupo_enemigos.add(enemigo)
 
 # Bucle principal del juego
 
@@ -57,8 +73,8 @@ while True:
         if event.type == pygame.QUIT:
             pygame.quit()
             sys.exit()
-        ##########################################################
- # Disparo con clic izquierdo del mouse
+        
+    # Disparo con clic izquierdo del mouse
         if event.type == pygame.MOUSEBUTTONDOWN:
             if event.button == 1:  # 1 = botón izquierdo
                 nave.disparar()
@@ -67,49 +83,47 @@ while True:
     teclas = pygame.key.get_pressed()
     mouse_pos = pygame.mouse.get_pos()
 
-    # Actualizar la nave (y sus balas)
-    grupo_naves.update(teclas, mouse_pos)
+    # =============================
+    # Actualizar lógica del juego
+    # =============================
 
+    # Actualizar la nave y los enemigos
+    grupo_naves.update(mouse_pos)
+    grupo_enemigos.update()
+
+   # Verificar colisiones: una bala solo destruye un enemigo
+    for bala in nave.balas:
+     enemigo_impactado = pygame.sprite.spritecollideany(bala, grupo_enemigos)
+     if enemigo_impactado:
+         bala.kill()  # Eliminar la bala si impacta
+         enemigo_impactado.kill()     # Eliminar el enemigo
+         nuevo = crear_enemigo()     # Crear uno nuevo
+         grupo_enemigos.add(nuevo)   # Agregarlo al grupo
+
+    # Verificar colisión precisa entre la nave y cada enemigo
+    for enemigo in grupo_enemigos:
+        distancia = math.hypot(
+          enemigo.rect.centerx - nave.rect.centerx,
+          enemigo.rect.centery - nave.rect.centery
+    )
+
+        if distancia < enemigo.radio_colision + 30:  # Ajusta el 30 si necesitas
+            offset = (enemigo.rect.left - nave.rect.left, enemigo.rect.top - nave.rect.top)
+            mask_enemigo = pygame.mask.from_surface(enemigo.image)
+ 
+            if nave.mask.overlap(mask_enemigo, offset):
+              print("¡Colisión real detectada!")
+              pygame.quit()
+              sys.exit()
+    
     # Dibujar fondo, nave y balas
     screen.fill(NEGRO)
     grupo_naves.draw(screen)
     nave.dibujar_balas(screen)  # Mostrar las balas disparadas
+    grupo_enemigos.draw(screen)
 
     # Actualizar pantalla
     pygame.display.flip()
     clock.tick(60)  # Limitar a 60 FPS
-
-
-
-    # =============================
-    # Entrada del jugador
-    # =============================
-
-    # Detectar teclas presionadas y posición del mouse
-    teclas = pygame.key.get_pressed()
-    mouse_pos = pygame.mouse.get_pos()
-
-    # =============================
-    # Actualización de la lógica del juego
-    # =============================
-
-    # Actualizar la posición y estado de la nave según la entrada
-    grupo_naves.update(teclas, mouse_pos)
-
-    # =============================
-    # Dibujar elementos en pantalla
-    # =============================
-
-    # Limpiar la pantalla
-    screen.fill(NEGRO)
-
-    # Dibujar la nave
-    grupo_naves.draw(screen)
-
-    # Actualizar la pantalla
-    pygame.display.flip()
-
-    # Esperar para mantener 60 FPS
-    clock.tick(60)
 
 

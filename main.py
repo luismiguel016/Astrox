@@ -57,6 +57,29 @@ while True:
         if event.type == pygame.QUIT:
             pygame.quit()
             sys.exit()
+        ##########################################################
+ # Disparo con clic izquierdo del mouse
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            if event.button == 1:  # 1 = botón izquierdo
+                nave.disparar()
+
+    # Entrada del usuario (posiciones de teclado y mouse)
+    teclas = pygame.key.get_pressed()
+    mouse_pos = pygame.mouse.get_pos()
+
+    # Actualizar la nave (y sus balas)
+    grupo_naves.update(teclas, mouse_pos)
+
+    # Dibujar fondo, nave y balas
+    screen.fill(NEGRO)
+    grupo_naves.draw(screen)
+    nave.dibujar_balas(screen)  # Mostrar las balas disparadas
+
+    # Actualizar pantalla
+    pygame.display.flip()
+    clock.tick(60)  # Limitar a 60 FPS
+
+
 
     # =============================
     # Entrada del jugador

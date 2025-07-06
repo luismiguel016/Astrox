@@ -20,6 +20,10 @@ screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Astrox")
 clock = pygame.time.Clock()
 
+# Cargar imagen de fondo del juego y escalarla al tamaño de la ventana
+fondo_juego = pygame.image.load("assets/images/fondo.png").convert()
+fondo_juego = pygame.transform.scale(fondo_juego, (WIDTH, HEIGHT))
+
 # Colores que usare en mi proyecto
 NEGRO = (0, 0, 0)
 BLANCO= (255, 255, 255)
@@ -112,12 +116,12 @@ while True:
             mask_enemigo = pygame.mask.from_surface(enemigo.image)
  
             if nave.mask.overlap(mask_enemigo, offset):
-              print("¡Colisión real detectada!")
+              print("¡Colisión detectada!")
               pygame.quit()
               sys.exit()
     
     # Dibujar fondo, nave y balas
-    screen.fill(NEGRO)
+    screen.blit(fondo_juego, (0, 0))  # Mostrar imagen de fondo
     grupo_naves.draw(screen)
     nave.dibujar_balas(screen)  # Mostrar las balas disparadas
     grupo_enemigos.draw(screen)

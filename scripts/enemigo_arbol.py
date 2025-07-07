@@ -23,7 +23,7 @@ class EnemigoArbol(pygame.sprite.Sprite):
 
         self.objetivo = objetivo
         self.velocidad = 2
-        self.rango_vision = 250  # Distancia a la que cambia de comportamiento
+        self.rango_vision = 300  # Distancia a la que cambia de comportamiento
         self.rango_colision = 80  # Para persecución
         self.direccion_patrulla = random.choice([(1, 0), (-1, 0), (0, 1), (0, -1)])
         self.contador_patrulla = 0

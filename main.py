@@ -15,6 +15,13 @@ from scripts.meteorito_astar import MeteoritoAStar
 pygame.init()
 pygame.mouse.set_visible(False)
 
+# Inicializar el mezclador de sonido
+pygame.mixer.init()
+
+# Cargar sonido de disparo
+sonido_disparo = pygame.mixer.Sound("assets/sounds/disparo_nave.mp3")
+sonido_disparo.set_volume(0.4)                                               # Puedes ajustar el volumen si quieres
+
 # Tamaño de la ventana
 WIDTH, HEIGHT = 800, 600
 screen = pygame.display.set_mode((WIDTH, HEIGHT), pygame.FULLSCREEN | pygame.SCALED)
@@ -46,6 +53,7 @@ mostrar_menu(screen, menu_image)
 pygame.mixer.music.stop()
 pygame.mixer.music.load("assets/music/musica_juego.mp3")
 pygame.mixer.music.play(-1)  # Se repite durante el juego
+pygame.mixer.music.set_volume(0.6)                                   # musica del juego, ajustar volumen
 
 
 # Importar la clase de la nave del jugador desde jugador.py
@@ -112,6 +120,7 @@ while True:
         if event.type == pygame.MOUSEBUTTONDOWN:
             if event.button == 1:  # Clic izquierdo
                 nave.disparar()
+                sonido_disparo.play()
 
     # Entrada del usuario
     teclas = pygame.key.get_pressed()

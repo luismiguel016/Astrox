@@ -7,6 +7,12 @@
 
 import pygame
 import sys
+import pygame.mixer
+
+# Iniciar el mixer para audio
+pygame.mixer.init()
+pygame.mixer.music.load("assets/music/musica_menu.mp3")
+pygame.mixer.music.play(-1)  # -1 para que se repita en loop
 
 def mostrar_menu(screen, imagen_menu):
     """

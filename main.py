@@ -8,6 +8,7 @@ import sys
 import random
 import math
 from scripts.enemigo_basico import EnemigoBasico
+from scripts.meteorito_astar import MeteoritoAStar
 
 
 # Inicialización de Pygame
@@ -70,12 +71,10 @@ def crear_enemigo():
     return EnemigoBasico(x, y, objetivo=nave)
 
 
-# Agregar enemigos desde arriba  ############################### aqui la cantidad de enemigos
-for i in range(3):
+# Agregar enemigos desde arriba   
+for i in range(3):                                                          # Cantidad de enemigos
     enemigo = EnemigoBasico(x=100 * i + 50, y=50, objetivo=nave)
     grupo_enemigos.add(enemigo)
-
-####
 
 from scripts.enemigo_arbol import EnemigoArbol
 
@@ -84,11 +83,24 @@ def crear_enemigo_arbol():
     y = random.randint(-100, -40)
     return EnemigoArbol(x, y, nave, WIDTH, HEIGHT)
 
+
+def crear_meteorito_astar():
+    x = random.randint(50, WIDTH - 50)
+    y = random.randint(-150, -50)
+    return MeteoritoAStar(x, y, nave)
+
+
 # Crea enemigos con árbol
-for _ in range(3):                       #333333333333333333333 aqui enemigos
+for _ in range(3):                                                         # Cantidad de enemigos
     grupo_enemigos.add(crear_enemigo_arbol())
 
-# Bucle principal del juego
+# Crea meteorito 
+for _ in range(2):  # o 3, dependiendo del nivel de dificultad
+    grupo_enemigos.add(crear_meteorito_astar())
+
+contador_meteorito = 0
+cooldown_meteorito = 600  # tiempo en frames (300 = 5 segundos si estás a 60 FPS)
+
 
 # Bucle principal del juego
 while True:
@@ -111,6 +123,13 @@ while True:
 
     grupo_naves.update(mouse_pos)
     grupo_enemigos.update()
+
+    # Cooldown para aparición de meteoritos A*
+    contador_meteorito += 1
+    if contador_meteorito >= cooldown_meteorito:                            
+        grupo_enemigos.add(crear_meteorito_astar())
+        contador_meteorito = 0  # reiniciar contador
+
 
     # Verificar si una bala enemiga golpea al jugador
     for enemigo in grupo_enemigos:
@@ -149,6 +168,18 @@ while True:
                 pygame.quit()
                 sys.exit()
 
+    # Verificar colisión precisa con meteorito (colisión circular)
+    for enemigo in grupo_enemigos:
+        if isinstance(enemigo, MeteoritoAStar):
+            dx = enemigo.rect.centerx - nave.rect.centerx
+            dy = enemigo.rect.centery - nave.rect.centery
+            distancia = math.hypot(dx, dy)
+            if distancia < enemigo.radio_colision + 30:  # Ajusta el 30 si quieres más precisión
+                print("¡Colisión con meteorito!")
+                pygame.quit()
+                sys.exit()
+            
+
     # ====================
     # Dibujar todo
     # ====================
@@ -164,6 +195,3 @@ while True:
 
     pygame.display.flip()
     clock.tick(60)
-
-
-

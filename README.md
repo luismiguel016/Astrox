@@ -37,7 +37,14 @@ Utilizado por enemigos intermedios (`EnemigoArbol`) que esquivan balas y dispara
 ## 🕹️ Controles
 Solo el mouse **Profesor usar control hace injugable este juego de Precision**
 
----
+## 🧪 Cómo ejecutar el juego
+
+1. Asegúrate de tener Python instalado.
+2. Instala las dependencias ejecutando:
+pip install -r requirements.txt
+3. Corre el juego con:
+python main.py
+
 
 ## 🎵 Recursos y multimedia
 

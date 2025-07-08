@@ -7,6 +7,7 @@ import pygame
 import sys
 import random
 import math
+import os
 from scripts.enemigo_basico import EnemigoBasico
 from scripts.meteorito_astar import MeteoritoAStar
 
@@ -40,10 +41,34 @@ AZUL = (64, 128, 255)
 # Importa la función que muestra el menú principal del juego
 from scripts.menu import mostrar_menu  
 
-
 # Cargar imagen del menú completo y ajustarla al tamaño de la ventana
 menu_original = pygame.image.load("assets/images/astrox_menu.png").convert()
 menu_image = pygame.transform.scale(menu_original, (WIDTH, HEIGHT))
+
+#
+def mostrar_menu_derrota(screen, fondo):
+    fuente = pygame.font.Font(None, 50)
+    texto = fuente.render("Perdiste. ¿Quieres reiniciar?", True, (255, 255, 255))
+    reiniciar_texto = fuente.render("Presiona R para Reiniciar", True, (255, 255, 255))
+    salir_texto = fuente.render("Presiona ESC para Salir", True, (255, 255, 255))
+
+    while True:
+        screen.blit(fondo, (0, 0))
+        screen.blit(texto, (WIDTH // 2 - texto.get_width() // 2, HEIGHT // 2 - 80))
+        screen.blit(reiniciar_texto, (WIDTH // 2 - reiniciar_texto.get_width() // 2, HEIGHT // 2))
+        screen.blit(salir_texto, (WIDTH // 2 - salir_texto.get_width() // 2, HEIGHT // 2 + 60))
+        pygame.display.flip()
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_r:
+                    return True  # Reiniciar
+                elif event.key == pygame.K_ESCAPE:
+                    pygame.quit()
+                    sys.exit()
 
 
 # Mostrar menú antes de iniciar el juego
@@ -146,8 +171,9 @@ while True:
             for bala in enemigo.balas:
                 if nave.rect.colliderect(bala.rect):
                     print("¡El jugador fue alcanzado por una bala enemiga!")
-                    pygame.quit()
-                    sys.exit()
+                    if mostrar_menu_derrota(screen, fondo_juego):
+                        os.execl(sys.executable, sys.executable, *sys.argv) 
+
 
     # Verificar si una bala del jugador impacta a un enemigo
     for bala in nave.balas:
@@ -174,8 +200,8 @@ while True:
 
             if nave.mask.overlap(mask_enemigo, offset):
                 print("¡Colisión detectada!")
-                pygame.quit()
-                sys.exit()
+                if mostrar_menu_derrota(screen, fondo_juego):
+                    os.execl(sys.executable, sys.executable,*sys.argv)
 
     # Verificar colisión precisa con meteorito (colisión circular)
     for enemigo in grupo_enemigos:
@@ -185,8 +211,8 @@ while True:
             distancia = math.hypot(dx, dy)
             if distancia < enemigo.radio_colision + 30:  # Ajusta el 30 si quieres más precisión
                 print("¡Colisión con meteorito!")
-                pygame.quit()
-                sys.exit()
+                if mostrar_menu_derrota(screen, fondo_juego):
+                    os.execl(sys.executable, sys.executable, *sys.argv)
             
 
     # ====================
